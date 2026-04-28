@@ -58,7 +58,7 @@ defmodule Explorer.Mixfile do
   defp deps do
     [
       {:bamboo, "~> 2.5.0"},
-      {:base58, "~> 2.0"},
+      {:basefiftyeight, "~> 0.1.0"},
       {:mime, "~> 2.0"},
       {:bcrypt_elixir, "~> 3.0"},
       # benchmark optimizations
