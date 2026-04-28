@@ -55,6 +55,15 @@ defmodule Explorer.Chain.Hash do
       <<"0x", hexadecimal_digits::binary>> ->
         cast_hexadecimal_digits(hexadecimal_digits, byte_count)
 
+      "BV" <> _bv_part when byte_count == 20 ->
+        case Explorer.Chain.Address.BVConverter.decode_to_hex(term) do
+          {:ok, hex_address} ->
+            cast_hexadecimal_digits(String.replace_prefix(hex_address, "0x", ""), byte_count)
+
+          {:error, _reason} ->
+            :error
+        end
+
       integer when is_integer(integer) ->
         cast_integer(integer, byte_count)
 
