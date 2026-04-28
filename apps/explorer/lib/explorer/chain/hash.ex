@@ -52,6 +52,16 @@ defmodule Explorer.Chain.Hash do
       <<_::big-integer-size(byte_count)-unit(@bits_per_byte)>> ->
         {:ok, %__MODULE__{byte_count: byte_count, bytes: term}}
 
+      # ===== 新增：BV 地址解码 =====
+      "BV" <> _bv_part when byte_count == 20 ->
+        case Explorer.Chain.Address.BVConverter.decode_to_hex(term) do
+          {:ok, hex_address} ->
+            cast_hexadecimal_digits(String.replace_prefix(hex_address, "0x", ""), byte_count)
+          {:error, _reason} ->
+            :error
+        end
+      # ===== 新增结束 =====
+
       <<"0x", hexadecimal_digits::binary>> ->
         cast_hexadecimal_digits(hexadecimal_digits, byte_count)
 

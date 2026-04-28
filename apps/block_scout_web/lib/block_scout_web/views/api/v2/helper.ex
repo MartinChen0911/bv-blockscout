@@ -78,7 +78,7 @@ defmodule BlockScoutWeb.API.V2.Helper do
       end
 
     %{
-      "hash" => Address.checksum(address),
+      "hash" => Explorer.Chain.Address.BVConverter.encode(address.hash.bytes),
       "is_contract" => smart_contract?,
       "name" => address_name(address),
       "is_scam" => address_marked_as_scam?(address),
@@ -109,7 +109,12 @@ defmodule BlockScoutWeb.API.V2.Helper do
 
   def address_with_info(_, address_hash) do
     %{
-      "hash" => Address.checksum(address_hash),
+      "hash" => case address_hash do
+        %Explorer.Chain.Hash{byte_count: 20, bytes: bytes} ->
+          Explorer.Chain.Address.BVConverter.encode(bytes)
+        _ ->
+          Address.checksum(address_hash)
+      end,
       "is_contract" => false,
       "name" => nil,
       "is_scam" => false,
